@@ -1,0 +1,139 @@
+<html>
+<title>Code BROWN</title>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+        crossorigin=""></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="grid-container">
+        <div class="grid-item">
+            <h2><span class="emoji">&#128169;</span><b> Code <span style='color:#8B4513'>BROWN</b></span></h2>
+        </div>
+        <div class="grid-item">
+            <!-- <button onclick="readCSV();">Show CSV Points</button> -->
+            <button class='findButton' onclick="getDataPoints();">Find Toilets</button>
+            <button onclick="showCurrentLocation();">Where Am I?</button>
+            <button id="addButton" onclick="addNewToilet();">Add New Toilet</button>
+        </div>
+        <div class="grid-item">
+            <div id="mapid"></div>
+        </div>
+
+        <!-- Add Toilet Modal -->
+        <div class="modal fade" id="addToiletModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><span class="emoji">&#128701;</span> Add New Toilet</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form onsubmit="return submitAddNewToilet();">
+                            <div class="form-group">
+                                <label for="newToiletName">Toilet Name</label>
+                                <input type="text" class="form-control" id="newToiletName"
+                                    placeholder="Enter toilet name">
+                            </div>
+                            <div class="form-group">
+                                <label for="newToiletAddress">Toilet Address</label>
+                                <input type="text" class="form-control" id="newToiletAddress"
+                                    placeholder="Enter toilet address">
+                            </div>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rate Toilet Modal -->
+    <div class="modal fade" id="rateToiletModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><span class="emoji">&#128701;</span> Rate Toilet</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="return submitAddRating();">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="fiveStar"
+                                value="fiveStar">
+                            <label class="form-check-label" for="fiveStar">
+                                &#11088;&#11088;&#11088;&#11088;&#11088; Five Stars
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="fourStar"
+                                value="fourStar">
+                            <label class="form-check-label" for="fourStar">
+                                &#11088;&#11088;&#11088;&#11088; Four Stars
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="threeStar"
+                                value="threeStar">
+                            <label class="form-check-label" for="threeStar">
+                                &#11088;&#11088;&#11088; Three Stars
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="twoStar"
+                                value="twoStar">
+                            <label class="form-check-label" for="twoStar">
+                                &#11088;&#11088; Two Stars
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="oneStar"
+                                value="oneStar" checked>
+                            <label class="form-check-label" for="oneStar">
+                                &#11088; One Star
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="noStar" value="noStar"
+                                checked>
+                            <label class="form-check-label" for="noStar">
+                                &#128169; No Stars - CODE BROWN
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+</body>
+<script src="index.js"></script>
+
+</html>

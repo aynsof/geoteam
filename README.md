@@ -1,1 +1,3 @@
-# geoteam
+README
+
+SA Hackathon - Team GIS

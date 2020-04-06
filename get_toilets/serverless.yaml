@@ -1,0 +1,40 @@
+# serverless.yml
+
+# IMPORTANT!
+# Change iamRoleStatements resource to your DynamoDB ARN. This is an overly broad permission.
+
+service: toilets
+
+package:
+  exclude:
+    - data/*
+    - local/*
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  memorySize: 1024
+  region: ap-southeast-2
+  timeout: 15
+  versionFunctions: false  
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:*
+    Resource:
+      - "arn:aws:dynamodb:ap-southeast-2:805600110321:*"
+
+functions:
+  app:
+    handler: index.handler
+    events:
+      - http: 
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+        
